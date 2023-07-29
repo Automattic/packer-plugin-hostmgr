@@ -1,0 +1,10 @@
+# Build Products
+.build
+packer-plugin-hostmgr
+
+# Runtime output
+crash.log
+
+# macOS
+.DS_Store
+

@@ -1,0 +1,6 @@
+- name: Provision a macOS VM
+  hosts: default
+
+  tasks:
+  - name: Test SSH
+    ansible.builtin.command: 'touch /Users/builder/Desktop/test'
