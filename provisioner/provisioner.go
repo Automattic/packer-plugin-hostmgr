@@ -109,7 +109,11 @@ func enablePasswordlessSudo(ctx context.Context, ui packer.Ui, communicator pack
 
 	scriptPath := fmt.Sprintf("/Users/%s/enable-passwordless-sudo.sh", username)
 
-	communicator.Upload(scriptPath, strings.NewReader(enablePasswordlessSudoCommand()), nil)
+	uploadErr := communicator.Upload(scriptPath, strings.NewReader(enablePasswordlessSudoCommand()), nil)
+
+	if uploadErr != nil {
+		return uploadErr
+	}
 
 	commandString := fmt.Sprintf("echo %s | sudo -S sh -eux %s", password, scriptPath)
 

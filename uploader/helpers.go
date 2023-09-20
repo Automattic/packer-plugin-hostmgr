@@ -54,5 +54,5 @@ func HostmgrExec(ctx context.Context, ui packersdk.Ui, args ...string) (string, 
 
 	err := cmd.Run()
 
-	return string(stdoutBuf.Bytes()), err
+	return stdoutBuf.String(), err
 }

@@ -2,6 +2,9 @@
 .build
 packer-plugin-hostmgr
 
+# Dependencies
+vendor
+
 # Runtime output
 crash.log
 

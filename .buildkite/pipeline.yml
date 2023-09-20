@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+steps:
+  #######
+  - label: ":golang: Build for {{ matrix.platform }} on {{ matrix.arch }}"
+    key: build
+    command: |
+      docker run \
+      -v $(pwd):/usr/src/plugin \
+      -v $(pwd)/.build:/go \
+      -w /usr/src/plugin \
+      -e GOOS={{ matrix.platform }} \
+      -e GOARCH={{ matrix.arch }} \
+      golang:1.20 go build
+    matrix:
+      setup:
+        platform:
+          - darwin
+        arch:
+          - amd64
+          - arm64
+    artifact_paths:
+      - "packer-plugin-hostmgr"
+
+  - label: ":golang-lint: Lint"
+    key: lint
+    command: make lint
+
