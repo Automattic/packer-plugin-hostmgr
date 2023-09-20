@@ -27,3 +27,19 @@ steps:
     key: lint
     command: make lint
 
+  - label: ":github: Release Build"
+    key: "gem-push"
+    if: build.tag != null
+    depends_on:
+     - build
+     - lint
+    command: |
+      docker run -v $(pwd):/app -w /app -e GOOS=darwin -e GOARCH=amd64 golang:1.20 go build -o packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64
+      docker run -v $(pwd):/app -w /app -e GOOS=darwin -e GOARCH=arm64 golang:1.20 go build -o packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64
+
+      zip -u packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64 packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64.zip
+      zip -u packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64 packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64.zip
+
+      docker run -v $(pwd):/app -w /app -e BUILDKITE_TAG -e GITHUB_TOKEN ruby:3.2.0 /bin/bash -c "bundle install && bundle exec ruby .buildkite/upload-artifacts.rb"
+    artifact_paths:
+      - "packer-plugin-hostmgr*"
