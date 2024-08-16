@@ -1,9 +1,9 @@
 packer {
   required_plugins {
-    #hostmgr = {
-    #  version = ">= 0.0.1"
-    #  source  = "github.com/Automattic/hostmgr"
-    #}
+    hostmgr = {
+     version = ">= 0.25.1"
+     source  = "github.com/Automattic/hostmgr"
+    }
   }
 }
 
