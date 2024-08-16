@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
-gem "octokit"
-gem "faraday-retry"
-gem "mime-types"
+gem 'faraday-retry'
+gem 'mime-types'
+gem 'octokit'
+gem 'rubocop'
