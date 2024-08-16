@@ -23,7 +23,7 @@ steps:
     artifact_paths:
       - "packer-plugin-hostmgr"
 
-  - label: ":golang-lint: Lint"
+  - label: ":golang: Lint"
     key: lint
     command: |
       rm -rf .git && make lint
