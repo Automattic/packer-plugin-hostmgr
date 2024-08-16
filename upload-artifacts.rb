@@ -22,7 +22,7 @@ HASHES_FILE = "packer-plugin-hostmgr_#{tag_name}_SHA256SUMS"
 [
   "packer-plugin-hostmgr_#{tag_name}_x5.0_darwin_amd64.zip",
   "packer-plugin-hostmgr_#{tag_name}_x5.0_darwin_arm64.zip"
-].map do |filename|
+].each do |filename|
   filepath = File.join(Dir.pwd, filename)
   abort "No file found at `#{filepath}`" unless File.file?(filepath)
 
@@ -33,7 +33,6 @@ HASHES_FILE = "packer-plugin-hostmgr_#{tag_name}_SHA256SUMS"
   )
 
   sha256 = Digest::SHA256.file filepath
-
   File.write(HASHES_FILE, "#{sha256.hexdigest}  #{filename}\n", mode: 'a')
 end
 
