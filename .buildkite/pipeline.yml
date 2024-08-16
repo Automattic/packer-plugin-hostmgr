@@ -12,7 +12,7 @@ steps:
       -w /usr/src/plugin \
       -e GOOS={{ matrix.platform }} \
       -e GOARCH={{ matrix.arch }} \
-      golang:1.20 go build
+      golang:1.20 go build -buildvcs=false
     matrix:
       setup:
         platform:
@@ -25,5 +25,21 @@ steps:
 
   - label: ":golang-lint: Lint"
     key: lint
-    command: make lint
+    command: rm -rf .git && make lint
 
+  - label: ":github: Release Build"
+    key: "gem-push"
+    if: build.tag != null
+    depends_on:
+     - build
+     - lint
+    command: |
+      docker run -v $(pwd):/app -w /app -e GOOS=darwin -e GOARCH=amd64 golang:1.20 go build -o packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64 -buildvcs=false
+      docker run -v $(pwd):/app -w /app -e GOOS=darwin -e GOARCH=arm64 golang:1.20 go build -o packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64 -buildvcs=false
+
+      zip "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64.zip" "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64"
+      zip "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64.zip" "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64"
+
+      docker run -v $(pwd):/app -w /app -e BUILDKITE_TAG -e GITHUB_TOKEN ruby:3.2.0 /bin/bash -c "bundle install && bundle exec ruby .buildkite/upload-artifacts.rb"
+    artifact_paths:
+      - "packer-plugin-hostmgr*"
