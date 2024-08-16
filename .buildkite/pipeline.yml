@@ -25,7 +25,12 @@ steps:
 
   - label: ":golang-lint: Lint"
     key: lint
-    command: rm -rf .git && make lint
+    command: |
+      rm -rf .git && make lint
+
+  - label: ":ruby: Ruby Lint"
+    key: lint-ruby
+    command: make lint-ruby
 
   - label: ":github: Release Build"
     key: "gem-push"
@@ -33,6 +38,7 @@ steps:
     depends_on:
      - build
      - lint
+     - lint-ruby
     command: |
       make package VERSION=${BUILDKITE_TAG}
       make publish VERSION=${BUILDKITE_TAG}
