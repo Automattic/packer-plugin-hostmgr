@@ -25,7 +25,7 @@ steps:
 
   - label: ":golang-lint: Lint"
     key: lint
-    command: make lint
+    command: rm -rf .git && make lint
 
   - label: ":github: Release Build"
     key: "gem-push"
