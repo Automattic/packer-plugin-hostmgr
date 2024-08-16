@@ -25,8 +25,7 @@ steps:
 
   - label: ":golang: Lint"
     key: lint
-    command: |
-      rm -rf .git && make lint
+    command: make lint
 
   - label: ":ruby: Ruby Lint"
     key: lint-ruby
