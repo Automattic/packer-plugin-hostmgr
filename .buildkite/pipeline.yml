@@ -23,9 +23,13 @@ steps:
     artifact_paths:
       - "packer-plugin-hostmgr"
 
-  - label: ":golang-lint: Lint"
+  - label: ":golang: Lint"
     key: lint
-    command: rm -rf .git && make lint
+    command: make lint
+
+  - label: ":ruby: Ruby Lint"
+    key: lint-ruby
+    command: make lint-ruby
 
   - label: ":github: Release Build"
     key: "gem-push"
@@ -33,13 +37,9 @@ steps:
     depends_on:
      - build
      - lint
+     - lint-ruby
     command: |
-      docker run -v $(pwd):/app -w /app -e GOOS=darwin -e GOARCH=amd64 golang:1.20 go build -o packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64 -buildvcs=false
-      docker run -v $(pwd):/app -w /app -e GOOS=darwin -e GOARCH=arm64 golang:1.20 go build -o packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64 -buildvcs=false
-
-      zip "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64.zip" "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_amd64"
-      zip "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64.zip" "packer-plugin-hostmgr_${BUILDKITE_TAG}_x5.0_darwin_arm64"
-
-      docker run -v $(pwd):/app -w /app -e BUILDKITE_TAG -e GITHUB_TOKEN ruby:3.2.0 /bin/bash -c "bundle install && bundle exec ruby .buildkite/upload-artifacts.rb"
+      make package VERSION=${BUILDKITE_TAG}
+      make publish VERSION=${BUILDKITE_TAG}
     artifact_paths:
       - "packer-plugin-hostmgr*"
