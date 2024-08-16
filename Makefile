@@ -6,7 +6,7 @@ fmt:
 	docker run -v $(shell pwd):/usr/src/plugin -v $(shell pwd)/.build:/go -w /usr/src/plugin golang:${GOLANG_VERSION} go fmt
 
 lint:
-	docker run --rm -v $(shell pwd):/app -w /app golangci/golangci-lint:v${GOLANGCI_LINT_VERSION} /bin/bash -c "go mod vendor && golangci-lint run -v --modules-download-mode vendor --timeout=10m"
+	docker run --rm -v $(shell pwd):/app -w /app -e GOFLAGS="-buildvcs=false" golangci/golangci-lint:v${GOLANGCI_LINT_VERSION} /bin/bash -c "go mod vendor && golangci-lint run -v --modules-download-mode vendor --timeout=10m"
 
 lint-ruby:
 	docker run --rm -v $(shell pwd):/app -w /app ruby:${RUBY_VERSION} /bin/bash -c "bundle install && bundle exec rubocop"
