@@ -1,0 +1,7 @@
+# Ruby dependency surface
+Gemfile*              @Automattic/apps-infra-tooling
+.rubocop*.yml         @Automattic/apps-infra-tooling
+
+# CI and automation
+.buildkite/           @Automattic/apps-infra-tooling
+.github/dependabot.yml @Automattic/apps-infra-tooling
