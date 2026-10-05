@@ -17,7 +17,7 @@ client = Octokit::Client.new(access_token: ENV.fetch('GITHUB_TOKEN', nil))
 release = client.releases(repository).select { |gh_release| tag_name == gh_release[:tag_name] }.first
 release = client.create_release(repository, tag_name) if release.nil?
 
-HASHES_FILE = "packer-plugin-hostmgr_#{tag_name}_SHA256SUMS"
+HASHES_FILE = "packer-plugin-hostmgr_#{tag_name}_SHA256SUMS".freeze
 
 [
   "packer-plugin-hostmgr_#{tag_name}_x5.0_darwin_amd64.zip",

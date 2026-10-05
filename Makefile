@@ -1,5 +1,5 @@
 GOLANG_VERSION := '1.20'
-RUBY_VERSION := '3.3.4'
+RUBY_VERSION := $(shell cat .ruby-version)
 GOLANGCI_LINT_VERSION := '1.60.1'
 
 fmt:
