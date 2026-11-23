@@ -2,6 +2,17 @@
 ---
 
 steps:
+  - label: "[DO NOT MERGE] Assert Ruby 3.4.13 on the release path"
+    command: |
+      set -o pipefail
+      docker run --rm ruby:$(cat .ruby-version) ruby -v | tee ruby-v.log
+      grep -F 'ruby 3.4.13 ' ruby-v.log
+      # Runs the real release target; a missing token aborts before any GitHub call.
+      if env -u GITHUB_TOKEN make publish VERSION=0.0.0-validation 2>&1 | tee publish.log; then
+        echo "publish unexpectedly succeeded"; exit 1
+      fi
+      grep -F 'No GitHub Token present in environment' publish.log
+
   #######
   - label: ":golang: Build for {{ matrix.platform }} on {{ matrix.arch }}"
     key: build
